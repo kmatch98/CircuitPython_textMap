@@ -1,7 +1,6 @@
 
-#kmatch98/CircuitPython_textMap Library
 
-What it does: Memory-conserving text graphics handling for CircuitPython, including colored text boxes.
+**What it does:** Memory-conserving text graphics handling for CircuitPython, including colored text boxes.
 
 # Usage
 
@@ -15,29 +14,33 @@ This `textmap` library attempts to reduce memory usage by letting you provide a 
 
 This library consists of two generic functions for writing text to the screen and then an example class `textBox` with capabilities for handling cursor position and inserting text.
 
-- Key Functions
-    1. `placeText` - Add the text to a bitmap
-    2. `bounding_box` - If I want to print some text, how large of a box is required to fit it?
+Key Basic Functions
+- `placeText` - Add the text to a bitmap
+- `bounding_box` - If I want to print some text, how large of a box is required to fit it?
 
 
 Example Class `textBox` - Creates a bitmap and handles cursor position, adding text and clearing the box. The functions handle word wrapping.
 
-- `textBox` Class Functions:
-    1. `addText` - Add some text to the box at the current cursor position
-    2. `setCursor` - Change the cursor (x,y) position
-    3. `getCursor` - Returns the cursor (x,y) position
-    4. `clearBitmap` - Clears the textBox bitmap to the original background color
+`textBox` Class Functions:
+- `addText` - Add some text to the box at the current cursor position
+- `setCursor` - Change the cursor (x,y) position
+- `getCursor` - Returns the cursor (x,y) position
+- `clearBitmap` - Clears the textBox bitmap to the original background color
 
 
-# Key Functions
+# Key Basic Functions
 The `placeText` function transfers text into a bitmap at the specified x and y locations.  For this function, you provide a `bitmap`, the `text`, `font` and `lineSpacing` and `x` and `y` locations for text to be added.  This functions writes the text into your bitmap.
 
 The `bounding_box` function is used to determine how large of a box (x and y) is required to cover the prospective text that you want to write.  This function is useful to calculate if a proposed text string will fit where you want to put it.  That way, you can determine if the text will fit before you write it.  This is particularly useful for word-wrapping or text-wrapping in a text terminal window.
+
+Note: Currently, the builtinFont `terminalio.FONT` is not handled with these functions.  (Reason: The terminalio.FONT builtinFont class is a fixed-sized font and its class is defined a little bit differently than an imported BDF font.)
 
 # Example Class: textBox
 
 The `textBox` example class provides a few structures and methods for creating and handling text addition into a rectangular box.  The `textBox` consists of a bitmap (`length`, `width`, `backGroundColor`), along with the required parameters to define the text that is to be added 
 (`font`, `textColor`, `lineSpacing`).
+
+The `textBox` class includes several functions for adding text (`addText`), setting and getting the cursor position (`setCursor` and `getCursor`) and clearing the bitmap (`clearBitMap`).
 
 Once you instance a `textBox`, you can then add the `textBoxName.bitmap` into a tileGrid for further displaying on an attached display.
 
