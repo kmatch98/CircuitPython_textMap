@@ -1,6 +1,7 @@
 
 
-**What it does:** Memory-conserving text graphics handling for CircuitPython, including colored text boxes.
+# What it does
+Memory-conserving text graphics handling for CircuitPython, including colored text boxes.
 
 # Usage
 
@@ -14,14 +15,14 @@ This `textmap` library attempts to reduce memory usage by letting you provide a 
 
 This library consists of two generic functions for writing text to the screen and then an example class `textBox` with capabilities for handling cursor position and inserting text.
 
-Key Basic Functions
+### Key Basic Functions
 - `placeText` - Add the text to a bitmap
 - `bounding_box` - If I want to print some text, how large of a box is required to fit it?
 
 
 Example Class `textBox` - Creates a bitmap and handles cursor position, adding text and clearing the box. The functions handle word wrapping.
 
-`textBox` Class Functions:
+### `textBox` Class Functions:
 - `addText` - Add some text to the box at the current cursor position
 - `setCursor` - Change the cursor (x,y) position
 - `getCursor` - Returns the cursor (x,y) position
