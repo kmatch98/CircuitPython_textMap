@@ -1,51 +1,48 @@
-Introduction
-============
 
-.. image:: https://readthedocs.org/projects/kmatch98-circuitpython-textmap/badge/?version=latest
-    :target: https://circuitpython.readthedocs.io/projects/textmap/en/latest/
-    :alt: Documentation Status
+#kmatch98/CircuitPython_textMap Library
 
-.. image:: https://img.shields.io/discord/327254708534116352.svg
-    :target: https://discord.gg/nBQh6qu
-    :alt: Discord
+What it does: Memory-conserving text graphics handling for CircuitPython, including colored text boxes.
 
-.. image:: https://github.com/kmatch98/Kmatch98_CircuitPython_textMap/workflows/Build%20CI/badge.svg
-    :target: https://github.com/kmatch98/Kmatch98_CircuitPython_textMap/actions
-    :alt: Build Status
+# Usage
 
-.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
-    :target: https://github.com/psf/black
-    :alt: Code Style: Black
-
-Text graphics handling for CircuitPython, including text boxes
-
-Usage
-=====
     import textmap
     from textmap import textBox
 
 This set of text display routines attempts to overcome the large memory usage of the current "label" function in the CircuitPython Display_Text library.  That function uses a collection of tileGrid (one per character) to handle printing proportional fonts.  The tileGrid approach comes with a lot of overhead that may be useful or unnecessary depending upon your application.
 https://github.com/adafruit/Adafruit_CircuitPython_Display_Text
 
-This `textmap` library attempts to overcome those issues by utilizing a bitmap buffer where the text is written.
+This `textmap` library attempts to reduce memory usage by letting you provide a bitmap where the text is written.
 
 This library consists of two generic functions for writing text to the screen and then an example class `textBox` with capabilities for handling cursor position and inserting text.
 
-Key Functions
-=============
-The `placeText` function is where text is transferred into a bitmap at the specified x and y locations.  For this function, you provide a `bitmap`, the `text`, `font` and `lineSpacing` to be added.  This functions writes the text into your bitmap.
+- Key Functions
+    1. `placeText` - Add the text to a bitmap
+    2. `bounding_box` - If I want to print some text, how large of a box is required to fit it?
+
+
+Example Class `textBox` - Creates a bitmap and handles cursor position, adding text and clearing the box. The functions handle word wrapping.
+
+- `textBox` Class Functions:
+    1. `addText` - Add some text to the box at the current cursor position
+    2. `setCursor` - Change the cursor (x,y) position
+    3. `getCursor` - Returns the cursor (x,y) position
+    4. `clearBitmap` - Clears the textBox bitmap to the original background color
+
+
+# Key Functions
+The `placeText` function transfers text into a bitmap at the specified x and y locations.  For this function, you provide a `bitmap`, the `text`, `font` and `lineSpacing` and `x` and `y` locations for text to be added.  This functions writes the text into your bitmap.
 
 The `bounding_box` function is used to determine how large of a box (x and y) is required to cover the prospective text that you want to write.  This function is useful to calculate if a proposed text string will fit where you want to put it.  That way, you can determine if the text will fit before you write it.  This is particularly useful for word-wrapping or text-wrapping in a text terminal window.
 
-Example Class: textBox
-======================
+# Example Class: textBox
+
 The `textBox` example class provides a few structures and methods for creating and handling text addition into a rectangular box.  The `textBox` consists of a bitmap (`length`, `width`, `backGroundColor`), along with the required parameters to define the text that is to be added 
 (`font`, `textColor`, `lineSpacing`).
 
 Once you instance a `textBox`, you can then add the `textBoxName.bitmap` into a tileGrid for further displaying on an attached display.
 
-Simple Example Usage:
-=====================
+# Simple Example Usage: textmap_simpletest.py
+
 The example file `textmap_simpletest.py` creates four textBox instances and plots them to the screen.  Then, during the permanent while loop, each character in the string is added.  Whenever the full string has been written, the `textBox` is cleared and text writing begins again.  One of the boxes is stationary, while the other three are then moved around on the screen.  
 
 
