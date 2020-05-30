@@ -3,6 +3,8 @@
 # What it does
 Memory-conserving text graphics handling for CircuitPython, including colored text boxes.
 
+![Demo of textmap_simpletest.py](examples/testmap_simpletest.gif)
+
 # Usage
 
     import textmap
