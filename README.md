@@ -47,7 +47,9 @@ Once you instance a `textBox`, you can then add the `textBoxName.bitmap` into a 
 
 # Simple Example Usage: `textmap_simpletest.py`
 
-The example file `textmap_simpletest.py` creates four textBox instances and plots them to the screen.  Each time through the while loop, one character is added to the `textBox`.  Whenever the full string has been written, the `textBox` is cleared and text writing begins again.  One of the boxes is stationary, while the other three are then moved around on the screen.  
+The example file `textmap_simpletest.py` creates four textBox instances and plots them to the screen. This example uses the three fonts located in the `fonts` subdirectory.
+
+Each time through the while loop, one character is added to the `textBox`.  Whenever the full string has been written, the `textBox` is cleared and text writing begins again.  One of the boxes is stationary, while the other three are then moved around on the screen.  
 
 
 Dependencies
