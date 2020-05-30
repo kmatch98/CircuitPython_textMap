@@ -22,7 +22,7 @@ This library consists of two generic functions for writing text to the screen an
 
 Example Class `textBox` - Creates a bitmap and handles cursor position, adding text and clearing the box. The functions handle word wrapping.
 
-### `textBox` Class Functions:
+### Class Functions: `textBox` 
 - `addText` - Add some text to the box at the current cursor position
 - `setCursor` - Change the cursor (x,y) position
 - `getCursor` - Returns the cursor (x,y) position
@@ -45,9 +45,9 @@ The `textBox` class includes several functions for adding text (`addText`), sett
 
 Once you instance a `textBox`, you can then add the `textBoxName.bitmap` into a tileGrid for further displaying on an attached display.
 
-# Simple Example Usage: textmap_simpletest.py
+# Simple Example Usage: `textmap_simpletest.py`
 
-The example file `textmap_simpletest.py` creates four textBox instances and plots them to the screen.  Then, during the permanent while loop, each character in the string is added.  Whenever the full string has been written, the `textBox` is cleared and text writing begins again.  One of the boxes is stationary, while the other three are then moved around on the screen.  
+The example file `textmap_simpletest.py` creates four textBox instances and plots them to the screen.  Each time through the while loop, one character is added to the `textBox`.  Whenever the full string has been written, the `textBox` is cleared and text writing begins again.  One of the boxes is stationary, while the other three are then moved around on the screen.  
 
 
 Dependencies
