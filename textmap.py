@@ -52,10 +52,15 @@ Implementation Notes
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/kmatch98/CircuitPython_textMap.git"
 
+def lineSpacingY(font, lineSpacing, scale=1):
+    # Note: Scale is not implemented at this time
+    fontHeight = font.get_glyph(ord('M')).height
+    returnValue = int(lineSpacing * fontHeight)
+    return returnValue
 
 def bounding_box(text, font, lineSpacing, scale=1):
-    # bounding_box - determines the bounding box size around give text
-    #   To be used to calculate if the text will be printed within the bounding_box
+    # bounding_box - determines the bounding box size around the new text to be added.
+    #   To be used to calculate if the new text will be printed within the bounding_box
     #   This function can used to determine character-wrapping or word-wrapping for a
     #   text terminal box, prior to actually printing the text in the bitmap.
     #
@@ -170,7 +175,10 @@ class textBox:
 
         # import terminalio
 
-        self._text = text  # text on the display
+        self._memorySaver=True # Set to True to prevent the class from storing the text string.
+
+        if self._memorySaver == False:
+            self._text = text  # text on the display
         self._font = font
         self._lineSpacing = lineSpacing
         self._fontHeight = self._font.get_glyph(ord("M")).height
@@ -192,7 +200,7 @@ class textBox:
         self._startX = self._cursorX  # the left column start position
         self._startY = self._cursorY  # the top row start position
 
-        self.addText(self._text)
+        self.addText(text)
 
         import gc
 
@@ -221,7 +229,8 @@ class textBox:
             )
             # print('newX: {}'.format(newX) )
             self.setCursor(newX, newY)
-            self._text = self._text + newText
+            if self._memorySaver == False:
+                self._text = self._text + newText # add this text to the instance text string.
         gc.collect()
         return self.getCursor()  # return tuple: (self._cursorX , self._cursorY)
 
@@ -240,3 +249,5 @@ class textBox:
                 self.bitmap[x, y] = 0
         gc.collect()
         self.setCursor(self._startX, self._startY)
+        if self._memorySaver == False: 
+            self._text='' # reset the text string
