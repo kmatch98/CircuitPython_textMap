@@ -175,7 +175,9 @@ class textBox:
 
         # import terminalio
 
-        self._memorySaver=True # Set to True to prevent the class from storing the text string.
+        # To save memory, set self._memorySaver=True, avoids storing the text string in the class.
+        # If set to False, the class saves the text string for future reference.
+        self._memorySaver=True 
 
         if self._memorySaver == False:
             self._text = text  # text on the display
