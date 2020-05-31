@@ -47,12 +47,15 @@ The `textBox` class includes several functions for adding text (`addText`), sett
 
 Once you instance a `textBox`, you can then add the `textBoxName.bitmap` into a tileGrid for further displaying on an attached display.
 
-# Simple Example Usage: `textmap_simpletest.py`
+# SimpleTest examples:
 
-The example file `textmap_simpletest.py` creates four textBox instances and plots them to the screen. This example uses the three fonts located in the `fonts` subdirectory.
+Two example files are included.  The file 'textmap_simpletest_builtin_screen.py' is setup for use with the Adafruit style boards with builtin screens, since the display startup is pretty simple.  The other file `textmap_simpletest.py` adds the more complicated setup for any other SPI connected displays.  You may need to update the SPI settings and the display driver for your particular display board.
 
-Each time through the while loop, one character is added to the `textBox`.  Whenever the full string has been written, the `textBox` is cleared and text writing begins again.  One of the boxes is stationary, while the other three are then moved around on the screen.  
+The example files create four textBox instances and plots them to the screen. This example uses the three fonts that can be found in the `fonts` subdirectory.
 
+Each time through the while loop, one character is added to the `textBox`.  Whenever the full string has been written, the `textBox` is cleared and text writing begins again.  One of the boxes is stationary, while the other three are then moved around on the screen. 
+
+On the Adafruit ItsyBitsy NRF52840 board, I see 68800 bytes of memory free, enough room to add another font or two!
 
 Dependencies
 =============
@@ -93,11 +96,6 @@ To install in a virtual environment in your current project:
     python3 -m venv .env
     source .env/bin/activate
     pip3 install adafruit-circuitpython-textmap
-
-Usage Example
-=============
-
-.. todo:: Add a quick, simple example. It and other examples should live in the examples folder and be included in docs/examples.rst.
 
 Contributing
 ============
