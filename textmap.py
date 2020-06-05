@@ -140,54 +140,54 @@ def placeText(
             print('Glyph not found: {}'.format(repr(char)))
         else:
 
-        width = myGlyph.width
-        height = myGlyph.height
-        # print('glyph width: {}, height: {}'.format(width, height))
-        dx = myGlyph.dx
-        dy = myGlyph.dy
-        shift_x = myGlyph.shift_x
-        shift_y = myGlyph.shift_x
-        glyph_offset_x = myGlyph.tile_index * width # for type BuiltinFont, this creates the x-offset in the glyph bitmap.
-                                                    # for BDF loaded fonts, this should equal 0
+            width = myGlyph.width
+            height = myGlyph.height
+            # print('glyph width: {}, height: {}'.format(width, height))
+            dx = myGlyph.dx
+            dy = myGlyph.dy
+            shift_x = myGlyph.shift_x
+            shift_y = myGlyph.shift_x
+            glyph_offset_x = myGlyph.tile_index * width # for type BuiltinFont, this creates the x-offset in the glyph bitmap.
+                                                        # for BDF loaded fonts, this should equal 0
 
-        # Not working yet***
-        # This offset is used to match the label.py function from Adafruit_Display_Text library
-        # y_offset = int(
-        #     (
-        #         self._font.get_glyph(ord("M")).height
-        #         - new_text.count("\n") * self.height * self.line_spacing
-        #     )
-        #     / 2 )
+            # Not working yet***
+            # This offset is used to match the label.py function from Adafruit_Display_Text library
+            # y_offset = int(
+            #     (
+            #         self._font.get_glyph(ord("M")).height
+            #         - new_text.count("\n") * self.height * self.line_spacing
+            #     )
+            #     / 2 )
 
-        # position_y = y - glyph.height - glyph.dy + y_offset
+            # position_y = y - glyph.height - glyph.dy + y_offset
 
-        # yOffset = int( (fontHeight-height*lineSpacing)/2 )
-        yOffset = fontHeight - height
-        for y in range(height):
-            for x in range(width):
-                xPlacement = x + xPosition + dx
-                # yPlacement=y+yPosition-height-dy+yOffset
-                yPlacement = y + yPosition - dy + yOffset
+            # yOffset = int( (fontHeight-height*lineSpacing)/2 )
+            yOffset = fontHeight - height
+            for y in range(height):
+                for x in range(width):
+                    xPlacement = x + xPosition + dx
+                    # yPlacement=y+yPosition-height-dy+yOffset
+                    yPlacement = y + yPosition - dy + yOffset
 
-                if (
-                    (xPlacement >= 0)
-                    and (yPlacement >= 0)
-                    and (xPlacement < bitmapWidth)
-                    and (yPlacement < bitmapHeight)
-                ):
+                    if (
+                        (xPlacement >= 0)
+                        and (yPlacement >= 0)
+                        and (xPlacement < bitmapWidth)
+                        and (yPlacement < bitmapHeight)
+                    ):
 
-                    paletteIndexes=(backgroundPaletteIndex, textPaletteIndex)
-                    # print('x: {}, y: {}, value: {}'.format(xPlacement, yPlacement, myGlyph.bitmap[x,y]))
-                    #bitmap[xPlacement, yPlacement] = (
-                    #    myGlyph.bitmap[x, y] * paletteIndex
-                    #)
-                    
-                    # Allows for different paletteIndex for background and text.
-                    bitmap[xPlacement, yPlacement] = paletteIndexes[myGlyph.bitmap[x+glyph_offset_x,y]]
+                        paletteIndexes=(backgroundPaletteIndex, textPaletteIndex)
+                        # print('x: {}, y: {}, value: {}'.format(xPlacement, yPlacement, myGlyph.bitmap[x,y]))
+                        #bitmap[xPlacement, yPlacement] = (
+                        #    myGlyph.bitmap[x, y] * paletteIndex
+                        #)
+                        
+                        # Allows for different paletteIndex for background and text.
+                        bitmap[xPlacement, yPlacement] = paletteIndexes[myGlyph.bitmap[x+glyph_offset_x,y]]
 
 
-        
-        xPosition = xPosition + shift_x
+            
+            xPosition = xPosition + shift_x
 
 
     return (xPosition, yPosition)
