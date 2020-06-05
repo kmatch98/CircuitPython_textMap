@@ -71,10 +71,10 @@ def bounding_box(text, font, lineSpacing, scale=1):
     fontHeight = font.get_glyph(ord("M")).height
 
     for char in text:
-        if char != '':
-            #print('bounding_box char: {}'.format(char))
-            myGlyph = font.get_glyph(ord(char))
-
+        myGlyph = font.get_glyph(ord(char))
+        if myGlyph == None: # Error checking: no glyph found
+            print('Glyph not found: {}'.format(repr(char)))
+        else:
             width = myGlyph.width
             height = myGlyph.height
             dx = myGlyph.dx
@@ -117,28 +117,28 @@ def placeText(
 
     fontHeight = font.get_glyph(ord("M")).height
 
+    bitmapWidth = bitmap.width
+    bitmapHeight = bitmap.height
 
-    if font == terminalio.FONT:
-        print("terminalio.FONT Found - BuiltinFont not handled by this function")
-        # handle this differently
 
-    else:
-        bitmapWidth = bitmap.width
-        bitmapHeight = bitmap.height
 
-        if backgroundPaletteIndex != 0: # the textbackground is different from the bitmap background
-            # draw a bounding box where the text will go
+    if backgroundPaletteIndex != 0: # the textbackground is different from the bitmap background
+        # draw a bounding box where the text will go
 
-            (ignore, fontLineHeight)=bounding_box('M g', font, lineSpacing, scale) # check height with ascender and descender.
-            (boxX, boxY) = bounding_box(text, font, lineSpacing, scale)
-            boxY=max(fontLineHeight, boxY)
-            for y in range(boxY):
-                for x in range(boxX):
-                    if (xPosition+x < bitmapWidth) and (yPosition+y < bitmapHeight): # check boundaries
-                        bitmap[xPosition+x, yPosition+y]=backgroundPaletteIndex
+        (ignore, fontLineHeight)=bounding_box('M g', font, lineSpacing, scale) # check height with ascender and descender.
+        (boxX, boxY) = bounding_box(text, font, lineSpacing, scale)
+        boxY=max(fontLineHeight, boxY)
+        for y in range(boxY):
+            for x in range(boxX):
+                if (xPosition+x < bitmapWidth) and (yPosition+y < bitmapHeight): # check boundaries
+                    bitmap[xPosition+x, yPosition+y]=backgroundPaletteIndex
 
-        for char in text:
-            myGlyph = font.get_glyph(ord(char))
+    for char in text:
+        myGlyph = font.get_glyph(ord(char))
+
+        if myGlyph == None: # Error checking: no glyph found
+            print('Glyph not found: {}'.format(repr(char)))
+        else:
 
             width = myGlyph.width
             height = myGlyph.height
@@ -147,6 +147,8 @@ def placeText(
             dy = myGlyph.dy
             shift_x = myGlyph.shift_x
             shift_y = myGlyph.shift_x
+            glyph_offset_x = myGlyph.tile_index * width # for type BuiltinFont, this creates the x-offset in the glyph bitmap.
+                                                        # for BDF loaded fonts, this should equal 0
 
             # Not working yet***
             # This offset is used to match the label.py function from Adafruit_Display_Text library
@@ -181,7 +183,7 @@ def placeText(
                         #)
                         
                         # Allows for different paletteIndex for background and text.
-                        bitmap[xPlacement, yPlacement] = paletteIndexes[myGlyph.bitmap[x,y]]
+                        bitmap[xPlacement, yPlacement] = paletteIndexes[myGlyph.bitmap[x+glyph_offset_x,y]]
 
 
             
