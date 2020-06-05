@@ -244,12 +244,7 @@ class textBox:
         return (self._cursorX, self._cursorY)
 
     def clearBitmap(self):
-        import gc
-
-        for x in range(self._width):
-            for y in range(self._height):
-                self.bitmap[x, y] = 0
-        gc.collect()
+        self.bitmap.fill(0) # quick builtin bitmap fill operation 
         self.setCursor(self._startX, self._startY)
         if self._memorySaver == False: 
             self._text='' # reset the text string
