@@ -26,7 +26,6 @@ display.show(None)
 
 print ('Display is started')
 
-
 # load all the fonts
 print('loading fonts...')
 
@@ -76,13 +75,13 @@ print( 'Memory free: {}'.format(gc.mem_free()) )
 
 textBoxes=[] # list of textBox instances
 
-textBoxes.append( textBox('', fontList[0], DISPLAY_WIDTH, DISPLAY_HEIGHT, backgroundColor=0x000000, textColor=0x443344) )
+textBoxes.append( textBox('', DISPLAY_WIDTH, DISPLAY_HEIGHT, 0x000000, 0x443344, fontList[0]) )
 print( 'Memory free: {}'.format(gc.mem_free()) )
-textBoxes.append( textBox('', fontList[0], 150, 60, backgroundColor=0x000000, textColor=0xFFFFFF) )
+textBoxes.append( textBox('', 150, 60, 0x000000, 0xFFFFFF, fontList[0]) )
 print( 'Memory free: {}'.format(gc.mem_free()) )
-textBoxes.append( textBox('', fontList[1], 160, 100, backgroundColor=0xFF00FF, textColor=0xFFFFFF) )
+textBoxes.append( textBox('', 160, 100, 0xFF00FF, 0xFFFFFF, fontList[1]) )
 print( 'Memory free: {}'.format(gc.mem_free()) )
-textBoxes.append( textBox('', fontList[2], 180, 80, backgroundColor=0x00FFFF, textColor=0x444444) )
+textBoxes.append( textBox('', 180, 80, 0x00FFFF, 0x444444, fontList[2]) )
 print( 'Memory free: {}'.format(gc.mem_free()) )
 gc.collect()
 myGroup = displayio.Group( max_size=len(textBoxes) ) # Create a group for displaying
