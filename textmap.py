@@ -65,14 +65,16 @@ def bounding_box(text, font, lineSpacing, scale=1):
     #   text terminal box, prior to actually printing the text in the bitmap.
     #
     # Note: Scale is not implemented at this time
+
+    #print('bounding_box text: {}'.format(text))
     boxHeight = boxWidth = 0
     fontHeight = font.get_glyph(ord("M")).height
 
     for char in text:
-        myGlyph = font.get_glyph(ord(char))
-        if myGlyph == None: # Error checking: no glyph found
-            print('Glyph not found: {}'.format(repr(char)))
-        else:
+        if char != '':
+            #print('bounding_box char: {}'.format(char))
+            myGlyph = font.get_glyph(ord(char))
+
             width = myGlyph.width
             height = myGlyph.height
             dx = myGlyph.dx
@@ -98,7 +100,10 @@ def bounding_box(text, font, lineSpacing, scale=1):
 
 
 def placeText(
-    bitmap, text, font, lineSpacing, xPosition, yPosition, paletteIndex=1, scale=1
+    bitmap, text, font, lineSpacing, xPosition, yPosition, 
+    textPaletteIndex=1, 
+    backgroundPaletteIndex=0, 
+    scale=1, 
 ):
     # placeText - Writes text into a bitmap at the specified location.
     #
@@ -108,20 +113,32 @@ def placeText(
     # Verify paletteIndex is working properly with * operator, especially if accommodating multicolored fonts
     #
     # Note: Scale is not implemented at this time
-
     import terminalio
 
     fontHeight = font.get_glyph(ord("M")).height
 
-    bitmapWidth = bitmap.width
-    bitmapHeight = bitmap.height
 
-    for char in text:
+    if font == terminalio.FONT:
+        print("terminalio.FONT Found - BuiltinFont not handled by this function")
+        # handle this differently
 
-        myGlyph = font.get_glyph(ord(char))
-        if myGlyph == None: # Error checking: no glyph found
-            print('Glyph not found: {}'.format(repr(char)))
-        else:
+    else:
+        bitmapWidth = bitmap.width
+        bitmapHeight = bitmap.height
+
+        if backgroundPaletteIndex != 0: # the textbackground is different from the bitmap background
+            # draw a bounding box where the text will go
+
+            (ignore, fontLineHeight)=bounding_box('M g', font, lineSpacing, scale) # check height with ascender and descender.
+            (boxX, boxY) = bounding_box(text, font, lineSpacing, scale)
+            boxY=max(fontLineHeight, boxY)
+            for y in range(boxY):
+                for x in range(boxX):
+                    if (xPosition+x < bitmapWidth) and (yPosition+y < bitmapHeight): # check boundaries
+                        bitmap[xPosition+x, yPosition+y]=backgroundPaletteIndex
+
+        for char in text:
+            myGlyph = font.get_glyph(ord(char))
 
             width = myGlyph.width
             height = myGlyph.height
@@ -130,8 +147,6 @@ def placeText(
             dy = myGlyph.dy
             shift_x = myGlyph.shift_x
             shift_y = myGlyph.shift_x
-            glyph_offset_x = myGlyph.tile_index * width # for type BuiltinFont, this creates the x-offset in the glyph bitmap.
-                                                        # for BDF loaded fonts, this should equal 0
 
             # Not working yet***
             # This offset is used to match the label.py function from Adafruit_Display_Text library
@@ -159,18 +174,26 @@ def placeText(
                         and (yPlacement < bitmapHeight)
                     ):
 
+                        paletteIndexes=(backgroundPaletteIndex, textPaletteIndex)
                         # print('x: {}, y: {}, value: {}'.format(xPlacement, yPlacement, myGlyph.bitmap[x,y]))
-                        bitmap[xPlacement, yPlacement] = (
-                            myGlyph.bitmap[x+glyph_offset_x, y] * paletteIndex
-                        )
+                        #bitmap[xPlacement, yPlacement] = (
+                        #    myGlyph.bitmap[x, y] * paletteIndex
+                        #)
+                        
+                        # Allows for different paletteIndex for background and text.
+                        bitmap[xPlacement, yPlacement] = paletteIndexes[myGlyph.bitmap[x,y]]
+
+
+            
             xPosition = xPosition + shift_x
+
 
     return (xPosition, yPosition)
 
 
 class textBox:
     def __init__(
-        self, text, font, width, height, backgroundColor=0x000000, textColor=0xFFFFFF, lineSpacing=1.25
+        self, text, width, height, backgroundColor, textColor, font, lineSpacing=1.25
     ):
 
         import displayio
@@ -195,10 +218,7 @@ class textBox:
 
         self.bitmap = displayio.Bitmap(self._width, self._height, 2)
         self.palette = displayio.Palette(2)
-        if self._backgroundColor == None:
-            self.palette.make_transparent(0)
-        else:
-            self.palette[0] = self._backgroundColor
+        self.palette[0] = self._backgroundColor
         self.palette[1] = self._textColor
 
         self._cursorX = 1  # controls insertion point for text
@@ -249,7 +269,12 @@ class textBox:
         return (self._cursorX, self._cursorY)
 
     def clearBitmap(self):
-        self.bitmap.fill(0)
+        import gc
+
+        for x in range(self._width):
+            for y in range(self._height):
+                self.bitmap[x, y] = 0
+        gc.collect()
         self.setCursor(self._startX, self._startY)
         if self._memorySaver == False: 
             self._text='' # reset the text string
