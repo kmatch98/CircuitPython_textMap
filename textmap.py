@@ -70,28 +70,30 @@ def bounding_box(text, font, lineSpacing, scale=1):
 
     for char in text:
         myGlyph = font.get_glyph(ord(char))
+        if myGlyph == None: # Error checking: no glyph found
+            print('Glyph not found: {}'.format(repr(char)))
+        else:
+            width = myGlyph.width
+            height = myGlyph.height
+            dx = myGlyph.dx
+            dy = myGlyph.dy
+            shift_x = myGlyph.shift_x
+            shift_y = myGlyph.shift_x
 
-        width = myGlyph.width
-        height = myGlyph.height
-        dx = myGlyph.dx
-        dy = myGlyph.dy
-        shift_x = myGlyph.shift_x
-        shift_y = myGlyph.shift_x
+            # Not working yet***
+            # This offset is used to match the label.py function from Adafruit_Display_Text library
+            # y_offset = int(
+            #     (
+            #         self._font.get_glyph(ord("M")).height
+            #         - new_text.count("\n") * self.height * self.line_spacing
+            #     )
+            #     / 2 )
 
-        # Not working yet***
-        # This offset is used to match the label.py function from Adafruit_Display_Text library
-        # y_offset = int(
-        #     (
-        #         self._font.get_glyph(ord("M")).height
-        #         - new_text.count("\n") * self.height * self.line_spacing
-        #     )
-        #     / 2 )
+            # yOffset = int( (fontHeight-height*lineSpacing)/2 )
+            yOffset = fontHeight - height
 
-        # yOffset = int( (fontHeight-height*lineSpacing)/2 )
-        yOffset = fontHeight - height
-
-        boxWidth = boxWidth + shift_x
-        boxHeight = max(boxHeight, height - dy + yOffset)
+            boxWidth = boxWidth + shift_x
+            boxHeight = max(boxHeight, height - dy + yOffset)
     return (boxWidth, boxHeight)
 
 
@@ -111,17 +113,15 @@ def placeText(
 
     fontHeight = font.get_glyph(ord("M")).height
 
-    if font == terminalio.FONT:
-        print("terminalio.FONT Found - BuiltinFont not handled by this function")
-        # handle this differently
+    bitmapWidth = bitmap.width
+    bitmapHeight = bitmap.height
 
-    else:
+    for char in text:
 
-        bitmapWidth = bitmap.width
-        bitmapHeight = bitmap.height
-
-        for char in text:
-            myGlyph = font.get_glyph(ord(char))
+        myGlyph = font.get_glyph(ord(char))
+        if myGlyph == None: # Error checking: no glyph found
+            print('Glyph not found: {}'.format(repr(char)))
+        else:
 
             width = myGlyph.width
             height = myGlyph.height
@@ -130,6 +130,8 @@ def placeText(
             dy = myGlyph.dy
             shift_x = myGlyph.shift_x
             shift_y = myGlyph.shift_x
+            glyph_offset_x = myGlyph.tile_index * width # for type BuiltinFont, this creates the x-offset in the glyph bitmap.
+                                                        # for BDF loaded fonts, this should equal 0
 
             # Not working yet***
             # This offset is used to match the label.py function from Adafruit_Display_Text library
@@ -159,7 +161,7 @@ def placeText(
 
                         # print('x: {}, y: {}, value: {}'.format(xPlacement, yPlacement, myGlyph.bitmap[x,y]))
                         bitmap[xPlacement, yPlacement] = (
-                            myGlyph.bitmap[x, y] * paletteIndex
+                            myGlyph.bitmap[x+glyph_offset_x, y] * paletteIndex
                         )
             xPosition = xPosition + shift_x
 
@@ -168,7 +170,7 @@ def placeText(
 
 class textBox:
     def __init__(
-        self, text, width, height, backgroundColor, textColor, font, lineSpacing=1.25
+        self, text, font, width, height, backgroundColor=0x000000, textColor=0xFFFFFF, lineSpacing=1.25
     ):
 
         import displayio
@@ -193,7 +195,10 @@ class textBox:
 
         self.bitmap = displayio.Bitmap(self._width, self._height, 2)
         self.palette = displayio.Palette(2)
-        self.palette[0] = self._backgroundColor
+        if self._backgroundColor == None:
+            self.palette.make_transparent(0)
+        else:
+            self.palette[0] = self._backgroundColor
         self.palette[1] = self._textColor
 
         self._cursorX = 1  # controls insertion point for text
@@ -244,12 +249,7 @@ class textBox:
         return (self._cursorX, self._cursorY)
 
     def clearBitmap(self):
-        import gc
-
-        for x in range(self._width):
-            for y in range(self._height):
-                self.bitmap[x, y] = 0
-        gc.collect()
+        self.bitmap.fill(0)
         self.setCursor(self._startX, self._startY)
         if self._memorySaver == False: 
             self._text='' # reset the text string
