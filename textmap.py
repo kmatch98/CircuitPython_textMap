@@ -128,10 +128,12 @@ def placeText(
         (ignore, fontLineHeight)=bounding_box('M g', font, lineSpacing, scale) # check height with ascender and descender.
         (boxX, boxY) = bounding_box(text, font, lineSpacing, scale)
         boxY=max(fontLineHeight, boxY)
+
         for y in range(boxY):
             for x in range(boxX):
                 if (xPosition+x < bitmapWidth) and (yPosition+y < bitmapHeight): # check boundaries
-                    bitmap[xPosition+x, yPosition+y]=backgroundPaletteIndex
+                    #bitmap[xPosition+x, yPosition+y]=backgroundPaletteIndex
+                    bitmap[(yPosition+y)*bitmapWidth + (xPosition + x)]=backgroundPaletteIndex
 
     for char in text:
         myGlyph = font.get_glyph(ord(char))
@@ -183,7 +185,8 @@ def placeText(
                         #)
                         
                         # Allows for different paletteIndex for background and text.
-                        bitmap[xPlacement, yPlacement] = paletteIndexes[myGlyph.bitmap[x+glyph_offset_x,y]]
+                        #bitmap[xPlacement, yPlacement] = paletteIndexes[myGlyph.bitmap[x+glyph_offset_x,y]]
+                        bitmap[yPlacement*bitmapWidth + xPlacement] = paletteIndexes[myGlyph.bitmap[y*width + x+glyph_offset_x]]
 
 
             
