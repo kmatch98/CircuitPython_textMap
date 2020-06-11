@@ -198,7 +198,7 @@ def placeText(
 
 class textBox:
     def __init__(
-        self, text, width, height, backgroundColor, textColor, font, lineSpacing=1.25
+        self, text, font, width, height, backgroundColor=0x000000, textColor=0xFFFFFF, lineSpacing=1.25
     ):
 
         import displayio
